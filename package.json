@@ -1,0 +1,57 @@
+{
+  "name": "phonetic-versioning",
+  "version": "1.0.0",
+  "description": "Generate memorable, pronounceable version names from build timestamps using English phonology",
+  "type": "module",
+  "main": "src/generator.js",
+  "exports": {
+    ".": "./src/generator.js",
+    "./pronunciation": "./src/pronunciation.js",
+    "./separators": "./src/separators.js",
+    "./encoder": "./src/encoder.js",
+    "./decoder": "./src/decoder.js"
+  },
+  "bin": {
+    "phonetic-version": "./tools/version-gen.js"
+  },
+  "scripts": {
+    "test": "node tests/basic.test.js",
+    "validate": "node tools/validate-samples.js",
+    "showcase": "node tools/pronunciation-showcase.js",
+    "hall-of-fame": "node tools/hall-of-fame.js"
+  },
+  "keywords": [
+    "versioning",
+    "phonetic",
+    "pronounceable",
+    "memorable",
+    "koremutake",
+    "timestamp",
+    "build-version",
+    "semantic-versioning",
+    "docker-names",
+    "ipa",
+    "phonology"
+  ],
+  "author": "Zdendys & Nyara",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/phonetic-versioning.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/phonetic-versioning/issues"
+  },
+  "homepage": "https://github.com/yourusername/phonetic-versioning#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "src/",
+    "data/",
+    "tools/",
+    "config.json",
+    "README.md",
+    "LICENSE"
+  ]
+}

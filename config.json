@@ -1,0 +1,416 @@
+{
+  "encoding": {
+    "baseInterval": 900,
+    "maxSyllables": 6,
+    "adaptiveCompression": true,
+    "digitInterleaving": true,
+    "compressionIntervals": [
+      {
+        "threshold": 7,
+        "interval": 360
+      },
+      {
+        "threshold": 8,
+        "interval": 720
+      },
+      {
+        "threshold": 9,
+        "interval": 1440
+      }
+    ]
+  },
+  "separators": {
+    "enabled": true,
+    "maxSeparators": 2,
+    "thresholds": {
+      "first": 100,
+      "second": 70,
+      "third": 50
+    },
+    "minSyllablesPerSegment": 1,
+    "comment": "All thresholds and weights multiplied by 10x for better granularity"
+  },
+  "scoring": {
+    "comment": "Weights for boundary scoring - will be learned from training data",
+    "apostrophe": {
+      "vowelHiatus": {
+        "weight": 200,
+        "comment": "Strong signal: vowel + vowel (ba'aa) [10x]",
+        "enabled": true
+      },
+      "elisionPattern": {
+        "weight": 120,
+        "comment": "Consonant + vowel, word-like (bunok'enga, O'Lantern style) [10x]",
+        "enabled": true
+      },
+      "shortLeftBonus": {
+        "weight": 30,
+        "comment": "Short left part + vowel start (ba'enga) [10x]",
+        "enabled": true
+      },
+      "interestBonus": {
+        "weight": 50,
+        "comment": "Apostrophe is most interesting separator [10x]",
+        "enabled": true
+      }
+    },
+    "dot": {
+      "prefixPattern": {
+        "weight": 200,
+        "comment": "Short left (1-2 syl), longer right, prefix-like (re.fenga, Dr.) [10x]",
+        "enabled": true
+      },
+      "veryShortLeft": {
+        "weight": 50,
+        "comment": "2-char left part (Dr., Mr. style) [10x]",
+        "enabled": true
+      },
+      "interestBonus": {
+        "weight": 30,
+        "comment": "Dot is interesting separator [10x]",
+        "enabled": true
+      },
+      "ruleBSimilarSyllables": {
+        "weight": 350,
+        "comment": "RULE B: 3+ syllables same length, same starting consonant (bat-bet-bit) [10x]",
+        "enabled": true
+      }
+    },
+    "hyphen": {
+      "criticalCluster": {
+        "weight": 160,
+        "comment": "CRITICAL - impossible to pronounce (tl, dl, pn, bn, dn, gn, kn, sr, zr, pb, td, kg, dt, gk, bd) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "heavySimilarRhyme": {
+        "weight": 140,
+        "comment": "Heavy syllables (4+ chars) with exact rhyme: brak-drak, glumrik-fendik (-ak, -ik endings) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "heavyPartialRhyme": {
+        "weight": 140,
+        "comment": "Heavy syllables with partial rhyme: brak-brek (similar structure, same final consonant) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "hardCluster": {
+        "weight": 140,
+        "comment": "Hard consonant cluster (kd, kt, bd, bk, etc.) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "heavyAndHeavy": {
+        "weight": 60,
+        "comment": "Both syllables are heavy (4+ chars): brak-flum, drak-glum - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "moderateCluster": {
+        "weight": 100,
+        "comment": "Moderate difficulty cluster (fs, sz, fp, etc.) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "identicalConsonants": {
+        "weight": 120,
+        "comment": "Same consonant repeated (t+t in bat-tak) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "samePlaceArticulation": {
+        "weight": 40,
+        "comment": "Both consonants from same place (bilabial, alveolar, velar) - FINE-TUNED [10x]",
+        "enabled": true
+      },
+      "interestBonus": {
+        "weight": 5,
+        "comment": "Hyphen interest bonus - small to reach ~2-3% [10x]",
+        "enabled": true
+      },
+      "ruleBSimilarSyllables": {
+        "weight": 280,
+        "comment": "RULE B: 3+ syllables same length, same starting consonant (bat-bet-bit) - FINE-TUNED [10x]",
+        "enabled": true
+      }
+    },
+    "space": {
+      "cleanConsonantBoundary": {
+        "weight": 300,
+        "comment": "Consonant end + consonant start, not hard cluster (bunok fenga) - INCREASED to win 2x more often than hyphen [10x]",
+        "enabled": true
+      },
+      "heavyAndHeavySpace": {
+        "weight": 280,
+        "comment": "Heavy + Heavy can use space too (compete 2:1 with hyphen): bunok fenga, dafen braklo - INCREASED to prefer space [10x]",
+        "enabled": true
+      },
+      "cleanSyllables": {
+        "weight": 120,
+        "comment": "Both syllables end/start cleanly (CVC + CV) - INCREASED for more space usage [10x]",
+        "enabled": true
+      },
+      "naturalWordSplit": {
+        "weight": 80,
+        "comment": "Both parts are word-like length (4+ chars each) - INCREASED for more space usage [10x]",
+        "enabled": true
+      },
+      "interestBonus": {
+        "weight": 50,
+        "comment": "Space is natural separator - INCREASED to make space more attractive [10x]",
+        "enabled": true
+      },
+      "ruleBSimilarSyllables": {
+        "weight": 400,
+        "comment": "RULE B: 3+ syllables same length, same starting consonant - INCREASED to match hyphen priority [10x]",
+        "enabled": true
+      }
+    },
+    "tilde": {
+      "creativePattern": {
+        "weight": 30,
+        "comment": "Creative/technical separator - BASE weight to reach ~10% usage [10x, then 4x]",
+        "enabled": true
+      },
+      "technicalSeparator": {
+        "weight": 0,
+        "comment": "Technical-looking separator - no BASE bonus [10x]",
+        "enabled": true
+      },
+      "alternativeToDot": {
+        "weight": 60,
+        "comment": "Alternative to dot - replaces dot in some cases (prefix patterns) - DECREASED [10x]",
+        "enabled": true
+      },
+      "alternativeToHyphen": {
+        "weight": 60,
+        "comment": "Alternative to hyphen - replaces hyphen in some cases (moderate clusters) - DECREASED [10x]",
+        "enabled": true
+      },
+      "heavyRhyme": {
+        "weight": 80,
+        "comment": "Heavy syllables with rhyme patterns (brak~drak style) - DECREASED [10x]",
+        "enabled": true
+      },
+      "cleanBoundary": {
+        "weight": 40,
+        "comment": "Clean consonant boundary where tilde adds creative touch - DECREASED [10x]",
+        "enabled": true
+      },
+      "interestBonus": {
+        "weight": 15,
+        "comment": "Tilde interest bonus - increased to reach ~10% [10x, then 4x]",
+        "enabled": true
+      }
+    },
+    "impossibleClusters": {
+      "comment": "Consonant pairs that are impossible/very difficult to pronounce across syllable boundaries (English alphabet only)",
+      "critical": {
+        "comment": "Critical - require separator (very hard/impossible to pronounce)",
+        "pairs": [
+          "tl",
+          "dl",
+          "dn",
+          "pn",
+          "bn",
+          "gn",
+          "kn",
+          "sr",
+          "zr",
+          "pb",
+          "td",
+          "kg",
+          "dt",
+          "gk",
+          "bd"
+        ]
+      },
+      "hard": {
+        "comment": "Hard - strongly prefer separator (difficult but not impossible)",
+        "pairs": [
+          "kd",
+          "kt",
+          "kg",
+          "kb",
+          "td",
+          "tk",
+          "tg",
+          "tb",
+          "bd",
+          "bk",
+          "bt",
+          "bg",
+          "gd",
+          "gk",
+          "gt",
+          "gb",
+          "pd",
+          "pk",
+          "pt",
+          "pg",
+          "nm",
+          "mn"
+        ]
+      },
+      "moderate": {
+        "comment": "Moderate - prefer separator (somewhat awkward)",
+        "pairs": [
+          "fs",
+          "vs",
+          "sz",
+          "zs",
+          "fp",
+          "vb",
+          "ft",
+          "vd"
+        ]
+      }
+    },
+    "identicalConsonants": {
+      "comment": "Same consonant repeated - always prefer separator",
+      "weight": 14,
+      "examples": [
+        "tt",
+        "kk",
+        "pp",
+        "dd",
+        "bb",
+        "gg",
+        "ff",
+        "ss",
+        "ll",
+        "mm",
+        "nn",
+        "rr"
+      ]
+    },
+    "placeOfArticulation": {
+      "comment": "Clusters with same place of articulation are often difficult",
+      "bilabial": [
+        "p",
+        "b",
+        "m"
+      ],
+      "alveolar": [
+        "t",
+        "d",
+        "n",
+        "s",
+        "z",
+        "l",
+        "r"
+      ],
+      "velar": [
+        "k",
+        "g"
+      ],
+      "note": "Two consonants from same place are harder to distinguish"
+    },
+    "rhymePatterns": {
+      "comment": "Common rhyming endings for heavy syllables - prefer hyphen when matching",
+      "exactRhymes": {
+        "comment": "Last 2 characters match exactly",
+        "commonEndings": [
+          "ak",
+          "ik",
+          "ok",
+          "uk",
+          "um",
+          "im",
+          "in",
+          "at",
+          "it",
+          "ot"
+        ]
+      },
+      "partialRhymes": {
+        "comment": "Last character matches (similar structure)",
+        "finalConsonants": [
+          "k",
+          "t",
+          "m",
+          "n",
+          "p",
+          "l"
+        ]
+      },
+      "heavySyllableThreshold": 4,
+      "note": "brak-drak (exact), brak-brek (partial), glumrik-fendik (exact -ik)"
+    },
+    "colon": {
+      "sameConsonantPattern": {
+        "weight": 300,
+        "enabled": true,
+        "comment": "Same consonant structure (tik:tok, brak:brik) - matching consonants in both syllables"
+      },
+      "similarStructure": {
+        "weight": 30,
+        "enabled": false,
+        "comment": "Similar syllable structure (CVC:CVC, CV:CV) with matching positions"
+      },
+      "rhythmicPair": {
+        "weight": 20,
+        "enabled": false,
+        "comment": "Rhythmic pairing effect (creates tik:tok feeling)"
+      },
+      "interestBonus": {
+        "weight": 0,
+        "enabled": true,
+        "comment": "Colon is very distinctive separator"
+      }
+    }
+  },
+  "phonotactics": {
+    "vowels": [
+      "a",
+      "e",
+      "i",
+      "o",
+      "u"
+    ],
+    "validOnsets": [
+      "b",
+      "d",
+      "f",
+      "g",
+      "h",
+      "k",
+      "l",
+      "m",
+      "n",
+      "p",
+      "r",
+      "br",
+      "dr",
+      "fl",
+      "gl",
+      "pr"
+    ],
+    "validCodas": [
+      "k",
+      "t",
+      "n",
+      "m",
+      "p",
+      "l"
+    ]
+  },
+  "generation": {
+    "defaultHyphenated": false,
+    "defaultMinSyllables": 0,
+    "includeIntervalInOutput": false
+  },
+  "training": {
+    "learningRate": 0.01,
+    "maxIterations": 1000,
+    "convergenceThreshold": 0.001
+  },
+  "separatorBalancing": {
+    "enabled": true,
+    "historySize": 100,
+    "diversityStrength": 0.8,
+    "targets": {
+      "space": 50,
+      "dot": 25,
+      "colon": 10,
+      "tilde": 8,
+      "hyphen": 5,
+      "apostrophe": 2
+    },
+    "comment": "Automatic balancing adjusts scores based on recent usage to match target distribution"
+  }
+}
