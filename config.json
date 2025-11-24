@@ -1,8 +1,8 @@
 {
   "encoding": {
-    "baseInterval": 900,
+    "baseInterval": 1,
     "maxSyllables": 6,
-    "adaptiveCompression": true,
+    "adaptiveCompression": false,
     "digitInterleaving": true,
     "compressionIntervals": [
       {

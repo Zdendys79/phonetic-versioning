@@ -66,8 +66,8 @@ export function parseVersionToSyllables(version) {
   while (remaining.length > 0) {
     let matched = false;
 
-    // Try to match longest syllable first (4 chars, then 3, then 2)
-    for (let len = 4; len >= 2; len--) {
+    // Try to match longest syllable first (6 chars down to 1)
+    for (let len = 6; len >= 1; len--) {
       if (remaining.length >= len) {
         const candidate = remaining.substring(0, len);
         if (data.syllables.includes(candidate)) {

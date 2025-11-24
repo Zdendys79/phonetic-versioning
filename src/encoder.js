@@ -1,50 +1,107 @@
 /**
- * Base-128 Encoder for Phonetic Versioning
- * Converts numbers to base-128 representation for syllable mapping
+ * Variable-Base Encoder for Phonetic Versioning
+ * Converts numbers to base-N representation for syllable mapping
  */
 
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Cache for syllable count
+let syllableCount = null;
+
 /**
- * Convert number to base-128 array
- * @param {number} num - The number to encode
- * @returns {number[]} Array of base-128 digits (0-127)
+ * Load syllable count from database
+ * @returns {number} Number of syllables available
  */
-export function toBase128(num) {
+function getSyllableCount() {
+  if (syllableCount === null) {
+    try {
+      const syllablesPath = join(__dirname, '../data/syllables.json');
+      const data = JSON.parse(readFileSync(syllablesPath, 'utf8'));
+      syllableCount = data.syllables.length;
+    } catch (e) {
+      // Fallback to 128 if file not found
+      console.warn('Could not load syllables.json, defaulting to base-128');
+      syllableCount = 128;
+    }
+  }
+  return syllableCount;
+}
+
+/**
+ * Convert number to base-N array
+ * @param {number} num - The number to encode
+ * @param {number} base - The base to use (default: auto-detect from syllables)
+ * @returns {number[]} Array of base-N digits
+ */
+export function toBaseN(num, base = null) {
+  if (base === null) {
+    base = getSyllableCount();
+  }
+
   if (num === 0) return [0];
 
   const digits = [];
   let remaining = num;
 
   while (remaining > 0) {
-    digits.unshift(remaining % 128);
-    remaining = Math.floor(remaining / 128);
+    digits.unshift(remaining % base);
+    remaining = Math.floor(remaining / base);
   }
 
   return digits;
 }
 
 /**
- * Convert base-128 array back to number
- * @param {number[]} digits - Array of base-128 digits
+ * Convert base-N array back to number
+ * @param {number[]} digits - Array of base-N digits
+ * @param {number} base - The base to use (default: auto-detect from syllables)
  * @returns {number} The decoded number
  */
-export function fromBase128(digits) {
+export function fromBaseN(digits, base = null) {
+  if (base === null) {
+    base = getSyllableCount();
+  }
+
   let num = 0;
 
   for (let i = 0; i < digits.length; i++) {
-    num = num * 128 + digits[i];
+    num = num * base + digits[i];
   }
 
   return num;
 }
 
 /**
+ * Convert number to base-128 array (legacy compatibility)
+ * @param {number} num - The number to encode
+ * @returns {number[]} Array of base-128 digits (0-127)
+ */
+export function toBase128(num) {
+  return toBaseN(num, 128);
+}
+
+/**
+ * Convert base-128 array back to number (legacy compatibility)
+ * @param {number[]} digits - Array of base-128 digits
+ * @returns {number} The decoded number
+ */
+export function fromBase128(digits) {
+  return fromBaseN(digits, 128);
+}
+
+/**
  * Encode number to syllable indices
  * @param {number} num - The number to encode
  * @param {number} minLength - Minimum number of syllables (padding)
- * @returns {number[]} Array of syllable indices (0-127)
+ * @returns {number[]} Array of syllable indices
  */
 export function encodeToSyllableIndices(num, minLength = 0) {
-  const indices = toBase128(num);
+  const indices = toBaseN(num); // Uses auto-detected base
 
   // Pad with zeros if needed
   while (indices.length < minLength) {
@@ -60,7 +117,7 @@ export function encodeToSyllableIndices(num, minLength = 0) {
  * @returns {number} The decoded number
  */
 export function decodeSyllableIndices(indices) {
-  return fromBase128(indices);
+  return fromBaseN(indices); // Uses auto-detected base
 }
 
 /**
